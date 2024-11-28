@@ -23,28 +23,37 @@ public class ScrapingService {
 	@Value("${books.scrape.url}")
 	private String scrapeUrl;
 
-	public void scrapeAndSaveBooks() throws IOException {
-
-		Document doc = Jsoup.connect(scrapeUrl).get();
-
-		Elements books = doc.select(".product_pod");
+	public void scrapeAndSaveBooks(int maxPages) throws IOException {
 		List<Book> bookList = new ArrayList<>();
 
-		for (Element bookElement : books) {
-			String title = bookElement.select("h3 a").attr("title");
-			String price = bookElement.select(".price_color").text();
-			String availability = bookElement.select(".instock.availability").text().trim();
-			String rating = bookElement.select("p.star-rating").attr("class").replace("star-rating", "").trim();
+		for (int page = 1; page <= maxPages; page++) {
+			String pageUrl = scrapeUrl + "/catalogue/page-" + page + ".html";
+			Document doc = Jsoup.connect(pageUrl).get();
 
-			Book book = new Book();
-			book.setTitle(title);
-			book.setPrice(price);
-			book.setAvailabilityStatus(availability);
-			book.setRating(rating);
+			Elements books = doc.select(".product_pod");
 
-			bookList.add(book);
+			if (books.isEmpty()) {
+				break;
+			}
+
+			for (Element bookElement : books) {
+				String title = bookElement.select("h3 a").attr("title");
+				String price = bookElement.select(".price_color").text();
+				String availability = bookElement.select(".instock.availability").text().trim();
+				String rating = bookElement.select("p.star-rating").attr("class").replace("star-rating", "").trim();
+
+				Book book = new Book();
+				book.setTitle(title);
+				book.setPrice(price);
+				book.setAvailabilityStatus(availability);
+				book.setRating(rating);
+
+				bookList.add(book);
+			}
 		}
 
-		bookRepository.saveAll(bookList);
+		if (!bookList.isEmpty()) {
+			bookRepository.saveAll(bookList);
+		}
 	}
 }

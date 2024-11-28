@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -23,9 +24,9 @@ public class BookController {
 	private final BookRepository bookRepository;
 
 	@GetMapping("/scrape")
-	public ResponseEntity<String> scrapeBooks() {
+	public ResponseEntity<String> scrapeBooks(@RequestParam(value = "pages", defaultValue = "5") int pages) {
 		try {
-			scrapingService.scrapeAndSaveBooks();
+			scrapingService.scrapeAndSaveBooks(pages);
 			return ResponseEntity.ok("Books scraped and saved successfully!");
 		} catch (IOException e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to scrape books");
