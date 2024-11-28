@@ -8,14 +8,17 @@ This project is a web scraper that extracts book information from the "Books to 
 - Spring Boot
 - PostgreSQL (configured in `application.properties`)
 
-## Endpoints
+## Endpoints and example request:
 
-- **POST /books/scrape**: Scrapes books data from the specified URL.
-- **GET /books**: Retrieves books with pagination.
+- **To get a list of books with pagination:
+- Request type: GET
+- URL: http://localhost:8080/books?page=0&size=10
+- Response: JSON containing a list of books and pagination information.
 
-Example request:
-/books/scrape
-GET /books?page=0&size=10
+- **To scrape books with page count:
+--Request type: GET
+--URL: http://localhost:8080/books/scrape?pages=3
+--Response: message about successful scraping of books.
 
 ## Database
 Books are stored in the PostgreSQL database. You can view them using a PostgreSQL client or a database management tool.
