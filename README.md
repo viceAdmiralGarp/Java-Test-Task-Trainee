@@ -4,7 +4,7 @@ This project is a web scraper that extracts book information from the "Books to 
 
 ## Requirements
 
-- Java 17+
+- Java 21+
 - Spring Boot
 - PostgreSQL (configured in `application.properties`)
 
